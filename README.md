@@ -49,13 +49,14 @@ settings.
 ## How to Use
 1. Open `index.html` in a web browser.
 2. The application will automatically display clocks based on the default locations or the
-3. locations specified in the URL parameters.
+locations specified in the URL parameters.
 4. Use the URL parameters to customize the display:
    - `locations`: A comma-separated list of city names or indices of default locations.
    - `single`: Set to `true` to display a single clock.
    - `interval`: The interval in minutes for updating the clock when in single or random mode.
 
-Example URL: `index.html?locations=Copenhagen,New York&single=false&interval=1`
+Example URL: `index.html?locations=?,Copenhagen,New York`
+This example will display three clocks, a random location, Copenhagen and New York.
 
 ## Development
 To modify the application, update the relevant JavaScript and CSS files. The `removeDuplicates` 
