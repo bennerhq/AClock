@@ -1,5 +1,5 @@
 ## Screenshot
-![Analog Clock Screenshot](https://github.com/yourusername/AClock/blob/main/images/screenshot.png)
+![Analog Clock Screenshot](https://github.com/bennerhq/AClock/blob/main/images/screenshot.png)
 
 # Analog Clock Application 
 
