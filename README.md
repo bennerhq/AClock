@@ -1,3 +1,6 @@
+## Screenshot
+![Analog Clock Screenshot](https://github.com/yourusername/AClock/blob/main/images/screenshot.png)
+
 # Analog Clock Application 
 
 ## Description
@@ -18,6 +21,7 @@ Copilot with Visual Studio Code!
 - Random time zone selection for dynamic clock display.
 - Responsive design that adjusts clock sizes based on screen dimensions.
 - Auto-generated time zone data file for easy updates.
+
 
 ## Files and Structure
 ### index.html
@@ -68,3 +72,4 @@ function in `timezones.js` can be used to generate a new `tz_objects.js` file wi
 
 ## License
 This project is licensed under the MIT License.
+
