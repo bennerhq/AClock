@@ -119,17 +119,14 @@ function createClocks() {
         clockContainer.appendChild(clockWrapper);
     }
     else {
-        let clockSize = 0;
-        if (window.innerWidth > window.innerHeight) {
-            clockContainer.style.flexDirection = 'row';
-            clockSize = (window.innerWidth - 20) / clocks.length;
-            while (clockSize > window.innerHeight - 20) clockSize -= 1;
-        }
-        else {
-            clockContainer.style.flexDirection = 'column';
-            clockSize = (window.innerHeight - 20) / clocks.length;
-            while (clockSize > window.innerWidth - 20) clockSize -= 1;
-        }
+        let sizeW = (window.innerWidth - 20) / clocks.length;
+        while (sizeW > window.innerHeight - 20) sizeW -= 1;
+
+        let sizeH = (window.innerHeight - 20) / clocks.length;
+        while (sizeH > window.innerWidth - 20) sizeH -= 1;
+
+        let clockSize = Math.max(sizeW, sizeH);
+        clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
 
         clocks.forEach((clock, idx) => {
             const clockWrapper = createClockElement(idx, clockSize);
