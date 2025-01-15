@@ -1,4 +1,4 @@
-# Analog Clock Application - a fun weekend project!
+# Analog Clock Application 
 
 ## Description
 The Analog Clock Application is a web-based project that displays multiple analog clocks 
@@ -6,6 +6,10 @@ for different time zones. The application allows users to view the current time 
 cities around the world, with the option to display a single clock or multiple clocks 
 simultaneously. The clocks are rendered using HTML5 Canvas and JavaScript, providing a 
 visually appealing and interactive experience.
+
+## Project 
+The main purpose of this project was to explore and learn how to use GitHub 
+Copilot with Visual Studio Code!
 
 ## Features
 - Display multiple analog clocks for different time zones.
