@@ -11,21 +11,8 @@ const COLOR_SCHEME = {
     hours: 'black', 
 };
 
-function getLocationsFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const locations = (urlParams.get('locations') || '').split(',').map(loc => {
-        const idx = parseInt(loc);
-        return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
-    }).filter(Boolean);
 
-    return {
-        locations,
-        single: urlParams.get('single') === "true",
-        interval: parseInt(urlParams.get('interval')) || 1
-    };
-}
-
-function createClockElement(idx, clockWidth) { 
+function createClockElement(clocks, idx, clockWidth) { 
     const cityNameFontSize = clockWidth / 17;
     const cityNameHeight = cityNameFontSize * 2;
 
