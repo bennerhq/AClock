@@ -55,15 +55,11 @@ function main() {
     let clocks = locations.map(location => {
         const random = location === "?";
         const timezone = random ? randomTimezone() : cityTimezone(location);
-        return timezone ? {... {random, interval, single}, ...timezone} : null;
+        return timezone ? {... {random, tickMinutes:0, lastMinute: 0}, ...timezone} : null;
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
-    clocks.forEach((clock, idx) => {
-        clock.idx = idx;
-        clock.tickMinutes = 0;
-        clock.lastMinute = 0;
-    });
+    clocks.forEach((clock, idx) => clock.idx = idx);
 
     const createClocks = () => {
         clocks.forEach(clock => clearInterval(clock.timerHandler));
@@ -92,15 +88,15 @@ function main() {
 
     const updateClocks = () => {
         clocks.forEach((clock, idx) => {
-            if (clock.random || clock.single) {
+            if (clock.random || single) {
                 const nowMinute = clock.analog.getMinutes();
                 if (clock.lastMinute !== nowMinute) {
                     clock.lastMinute = nowMinute;
                     clock.tickMinutes ++
-                    if (clock.tickMinutes >= clock.interval) {
+                    if (clock.tickMinutes >= interval) {
                         clock.tickMinutes = 0;
 
-                        if (clock.single) clocks[idx] = clock = clocks[(clock.idx + 1) % clocks.length];
+                        if (single) clocks[idx] = clock = clocks[(clock.idx + 1) % clocks.length];
                         if (clock.random) clocks[idx] = clock = {... clock, ...randomTimezone()};
                     }
                 }
@@ -116,7 +112,13 @@ function main() {
 
     createClocks();
     updateClocks();
-    setInterval(updateClocks, 1000 / 60);
+
+    const animateClocks = () => {
+        updateClocks();
+
+        requestAnimationFrame(animateClocks);
+    };
+    requestAnimationFrame(animateClocks);
 
     window.addEventListener('load', createClocks);
     window.addEventListener('resize', createClocks);
