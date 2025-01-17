@@ -45,7 +45,6 @@ function createClockElement(clock, idx, clockWidth) {
 
 function main() {
     const urlParams = new URLSearchParams(window.location.search);
-    const single = urlParams.get('single') === "true";
     const interval = parseInt(urlParams.get('interval')) || 1;
     const locations = (urlParams.get('locations') || '').split(',').map(loc => {
         const idx = parseInt(loc);
@@ -65,30 +64,23 @@ function main() {
         clocks.forEach(clock => clearInterval(clock.timerHandler));
 
         const clockContainer = document.getElementById('clock-container');
-        if (single) {
-            const clockSize = Math.min(window.innerHeight, window.innerWidth);
-            const clockWrapper = createClockElement(clock, 0, clockSize);
-            clockContainer.appendChild(clockWrapper);
-        }
-        else {
-            let sizeW = (window.innerWidth - 20) / clocks.length;
-            while (sizeW > window.innerHeight - 20) sizeW -= 1;
-            let sizeH = (window.innerHeight - 20) / clocks.length;
-            while (sizeH > window.innerWidth - 20) sizeH -= 1;
+        let sizeW = (window.innerWidth - 20) / clocks.length;
+        while (sizeW > window.innerHeight - 20) sizeW -= 1;
+        let sizeH = (window.innerHeight - 20) / clocks.length;
+        while (sizeH > window.innerWidth - 20) sizeH -= 1;
 
-            let clockSize = Math.max(sizeW, sizeH);
-            clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
-        
-            clocks.forEach((clock, idx) => {
-                const clockWrapper = createClockElement(clock, idx, clockSize);
-                clockContainer.appendChild(clockWrapper);
-            });
-        }
+        let clockSize = Math.max(sizeW, sizeH);
+        clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
+    
+        clocks.forEach((clock, idx) => {
+            const clockWrapper = createClockElement(clock, idx, clockSize);
+            clockContainer.appendChild(clockWrapper);
+        });
     };
 
     const updateClocks = () => {
         clocks.forEach((clock, idx) => {
-            if (clock.random || single) {
+            if (clock.random) {
                 const nowMinute = clock.analog.getMinutes();
                 if (clock.lastMinute !== nowMinute) {
                     clock.lastMinute = nowMinute;
@@ -96,7 +88,6 @@ function main() {
                     if (clock.tickMinutes >= interval) {
                         clock.tickMinutes = 0;
 
-                        if (single) clocks[idx] = clock = clocks[(clock.idx + 1) % clocks.length];
                         if (clock.random) clocks[idx] = clock = {... clock, ...randomTimezone()};
                     }
                 }

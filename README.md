@@ -16,7 +16,6 @@ Copilot with Visual Studio Code!
 
 ## Features
 - Display multiple analog clocks for different time zones.
-- Option to display a single clock or multiple clocks.
 - Automatic time zone detection based on city names.
 - Random time zone selection for dynamic clock display.
 - Responsive design that adjusts clock sizes based on screen dimensions.
@@ -60,7 +59,6 @@ settings.
 locations specified in the URL parameters.
 4. Use the URL parameters to customize the display:
    - `locations`: A comma-separated list of city names or indices of default locations.
-   - `single`: Set to `true` to display a single clock.
    - `interval`: The interval in minutes for updating the clock when in single or random mode.
 
 Example URL: `index.html?locations=?,Copenhagen,New York`
