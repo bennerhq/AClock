@@ -58,11 +58,7 @@ function main() {
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
-    clocks.forEach((clock, idx) => clock.idx = idx);
-
     const createClocks = () => {
-        clocks.forEach(clock => clearInterval(clock.timerHandler));
-
         const clockContainer = document.getElementById('clock-container');
         let sizeW = (window.innerWidth - 20) / clocks.length;
         while (sizeW > window.innerHeight - 20) sizeW -= 1;
@@ -78,7 +74,7 @@ function main() {
         });
     };
 
-    const updateClocks = () => {
+    const animateClocks = () => {
         clocks.forEach((clock, idx) => {
             if (clock.random) {
                 const nowMinute = clock.analog.getMinutes();
@@ -99,16 +95,10 @@ function main() {
             clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
             clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
         });
-    }
-
-    createClocks();
-    updateClocks();
-
-    const animateClocks = () => {
-        updateClocks();
 
         requestAnimationFrame(animateClocks);
     };
+    createClocks();
     requestAnimationFrame(animateClocks);
 
     window.addEventListener('load', createClocks);
