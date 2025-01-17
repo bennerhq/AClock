@@ -11,7 +11,6 @@ const COLOR_SCHEME = {
     hours: 'black', 
 };
 
-
 function createClockElement(clocks, idx, clockWidth) { 
     const cityNameFontSize = clockWidth / 17;
     const cityNameHeight = cityNameFontSize * 2;
@@ -81,11 +80,10 @@ function main() {
         return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
     }).filter(Boolean);
 
-    const clocks = locations.map(location => {
+    let clocks = locations.map(location => {
         const random = location === "?";
-        const params = {random, interval, single};
         const timezone = random ? randomTimezone() : cityTimezone(location);
-        return timezone ? {... params, ...timezone} : null;
+        return timezone ? {... {random, interval, single}, ...timezone} : null;
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
     clocks.map((clock, idx) => ({ ...clock, idx })) 
