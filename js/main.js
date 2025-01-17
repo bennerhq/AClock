@@ -74,7 +74,7 @@ function main() {
         });
     };
 
-    const animateClocks = () => {
+    const updateClocks = () => {
         clocks.forEach((clock, idx) => {
             if (clock.random) {
                 const nowMinute = clock.analog.getMinutes();
@@ -95,6 +95,10 @@ function main() {
             clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
             clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
         });
+    };
+
+    const animateClocks = () => {
+        updateClocks();
 
         requestAnimationFrame(animateClocks);
     };
