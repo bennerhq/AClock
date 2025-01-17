@@ -80,9 +80,9 @@ function main() {
         return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
     }).filter(Boolean);
 
-    const clocks = locations.map(location => {
+    let clocks = locations.map(location => {
         const random = location === "?";
-        const params = {random, interval, single, timeHandler: null};
+        const params = {random, interval, single};
         const timezone = random ? randomTimezone() : cityTimezone(location);
         return timezone ? {... params, ...timezone} : null;
     }).filter(Boolean);
