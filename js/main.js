@@ -2,8 +2,6 @@
  * @fileoverview Main application file
  */
 
-let clocks = [];
-
 const COLOR_SCHEME = {
     background: 'white', 
     frame: 'black',
@@ -13,21 +11,7 @@ const COLOR_SCHEME = {
     hours: 'black', 
 };
 
-function getLocationsFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const locations = (urlParams.get('locations') || '').split(',').map(loc => {
-        const idx = parseInt(loc);
-        return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
-    }).filter(Boolean);
-
-    return {
-        locations,
-        single: urlParams.get('single') === "true",
-        interval: parseInt(urlParams.get('interval')) || 1
-    };
-}
-
-function createClockElement(idx, clockWidth) { 
+function createClockElement(clocks, idx, clockWidth) { 
     const cityNameFontSize = clockWidth / 17;
     const cityNameHeight = cityNameFontSize * 2;
 
@@ -87,12 +71,18 @@ function createClockElement(idx, clockWidth) {
     return clockWrapper;
 }
 
-function createClocks() {
-    const { locations, single, interval } = getLocationsFromUrl();
-    clocks.forEach(clock => clearInterval(clock.timerHandler));
-    clocks = locations.map(location => {
+function main() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const single = urlParams.get('single') === "true";
+    const interval = parseInt(urlParams.get('interval')) || 1;
+    const locations = (urlParams.get('locations') || '').split(',').map(loc => {
+        const idx = parseInt(loc);
+        return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
+    }).filter(Boolean);
+
+    const clocks = locations.map(location => {
         const random = location === "?";
-        const params = {random, interval, single};
+        const params = {random, interval, single, timeHandler: null};
         const timezone = random ? randomTimezone() : cityTimezone(location);
         return timezone ? {... params, ...timezone} : null;
     }).filter(Boolean);
@@ -100,28 +90,30 @@ function createClocks() {
     clocks.map((clock, idx) => ({ ...clock, idx })) 
 
     const clockContainer = document.getElementById('clock-container');
-    if (single) {
-        const clockSize = Math.min(window.innerHeight, window.innerWidth);
-        const clockWrapper = createClockElement(0, clockSize);
-        clockContainer.appendChild(clockWrapper);
-    }
-    else {
-        let sizeW = (window.innerWidth - 20) / clocks.length;
-        while (sizeW > window.innerHeight - 20) sizeW -= 1;
-        let sizeH = (window.innerHeight - 20) / clocks.length;
-        while (sizeH > window.innerWidth - 20) sizeH -= 1;
+    const createClocks = () => {
+        clocks.forEach(clock => clock.timeHandler !== null ? clearInterval(clock.timerHandler) : null);
 
-        let clockSize = Math.max(sizeW, sizeH);
-        clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
-
-        clocks.forEach((clock, idx) => {
-            const clockWrapper = createClockElement(idx, clockSize);
+        if (single) {
+            const clockSize = Math.min(window.innerHeight, window.innerWidth);
+            const clockWrapper = createClockElement(clocks, 0, clockSize);
             clockContainer.appendChild(clockWrapper);
-        });
-    }
-}
+        }
+        else {
+            let sizeW = (window.innerWidth - 20) / clocks.length;
+            while (sizeW > window.innerHeight - 20) sizeW -= 1;
+            let sizeH = (window.innerHeight - 20) / clocks.length;
+            while (sizeH > window.innerWidth - 20) sizeH -= 1;
+        
+            let clockSize = Math.max(sizeW, sizeH);
+            clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
+        
+            clocks.forEach((clock, idx) => {
+                const clockWrapper = createClockElement(clocks, idx, clockSize);
+                clockContainer.appendChild(clockWrapper);
+            });
+        }
+    };
 
-function main() {
     window.addEventListener('load', createClocks);
     window.addEventListener('resize', createClocks);
     window.addEventListener('touchstart' in window ? 'touchstart' : 'click', createClocks);
