@@ -83,17 +83,17 @@ function main() {
 
     const clocks = locations.map(location => {
         const random = location === "?";
-        const params = {random, interval, single, timeHandler: null};
+        const params = {random, interval, single};
         const timezone = random ? randomTimezone() : cityTimezone(location);
         return timezone ? {... params, ...timezone} : null;
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
     clocks.map((clock, idx) => ({ ...clock, idx })) 
 
-    const clockContainer = document.getElementById('clock-container');
     const createClocks = () => {
-        clocks.forEach(clock => clock.timeHandler !== null ? clearInterval(clock.timerHandler) : null);
+        clocks.forEach(clock => clearInterval(clock.timerHandler));
 
+        const clockContainer = document.getElementById('clock-container');
         if (single) {
             const clockSize = Math.min(window.innerHeight, window.innerWidth);
             const clockWrapper = createClockElement(clocks, 0, clockSize);
