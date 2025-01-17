@@ -72,10 +72,16 @@ function createClockElement(clocks, idx, clockWidth) {
     return clockWrapper;
 }
 
-function createClocks() {
-    const { locations, single, interval } = getLocationsFromUrl();
-    clocks.forEach(clock => clearInterval(clock.timerHandler));
-    clocks = locations.map(location => {
+function main() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const single = urlParams.get('single') === "true";
+    const interval = parseInt(urlParams.get('interval')) || 1;
+    const locations = (urlParams.get('locations') || '').split(',').map(loc => {
+        const idx = parseInt(loc);
+        return isNaN(idx) ? loc : DEFAULT_LOCATIONS[idx];
+    }).filter(Boolean);
+
+    const clocks = locations.map(location => {
         const random = location === "?";
         const params = {random, interval, single, timeHandler: null};
         const timezone = random ? randomTimezone() : cityTimezone(location);
