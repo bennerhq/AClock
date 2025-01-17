@@ -92,8 +92,6 @@ class AnalogClock {
     }
 
     setTimezone = (timezone) => this.timezone = timezone;
-
     isPM = () => this.date.getHours() >= 12;
-
     getMinutes = () => this.date.getMinutes();
 }

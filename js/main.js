@@ -11,7 +11,7 @@ const COLOR_SCHEME = {
     hours: 'black', 
 };
 
-function createClockElement(clocks, idx, clockWidth) { 
+function createClockElement(clock, idx, clockWidth) { 
     const cityNameFontSize = clockWidth / 17;
     const cityNameHeight = cityNameFontSize * 2;
 
@@ -36,37 +36,9 @@ function createClockElement(clocks, idx, clockWidth) {
     const cityName = clockWrapper.querySelector(`#cityName-${idx}`);
     cityName.style.fontSize = `${cityNameFontSize}px`;
 
-    let clock = clocks[idx];
-    const analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
-
-    const displayClock = (clock) => { 
-        analog.setTimezone(clock.timezone);
-        analog.drawClock();
-
-        cityName.className = `city-name-${analog.isPM() ? 'pm' : 'am'}`;
-        cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
-    }
-    displayClock(clock);
-
-    let tickMinutes = 0;
-    let lastMinute = analog.getMinutes();
-    clock.timerHandler = setInterval(() => {
-        if (clock.random || clock.single) {
-            const nowMinute = analog.getMinutes();
-            if (lastMinute !== nowMinute) {
-                lastMinute = nowMinute;
-                tickMinutes ++
-                if (tickMinutes >= clock.interval) {
-                    tickMinutes = 0;
-
-                    if (clock.single) clocks[idx] = clock = clocks[(clock.idx + 1) % clocks.length];
-                    if (clock.random) clocks[idx] = clock = {... clock, ...randomTimezone()};
-                }
-            }    
-        }
-
-        displayClock(clock);
-    }, 1000 / 60);
+    clock.analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
+    clock.analog.drawClock();
+    clock.cityName = cityName;
 
     return clockWrapper;
 }
@@ -86,7 +58,12 @@ function main() {
         return timezone ? {... {random, interval, single}, ...timezone} : null;
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
-    clocks.map((clock, idx) => ({ ...clock, idx })) 
+
+    clocks.forEach((clock, idx) => {
+        clock.idx = idx;
+        clock.tickMinutes = 0;
+        clock.lastMinute = 0;
+    });
 
     const createClocks = () => {
         clocks.forEach(clock => clearInterval(clock.timerHandler));
@@ -94,7 +71,7 @@ function main() {
         const clockContainer = document.getElementById('clock-container');
         if (single) {
             const clockSize = Math.min(window.innerHeight, window.innerWidth);
-            const clockWrapper = createClockElement(clocks, 0, clockSize);
+            const clockWrapper = createClockElement(clock, 0, clockSize);
             clockContainer.appendChild(clockWrapper);
         }
         else {
@@ -102,16 +79,44 @@ function main() {
             while (sizeW > window.innerHeight - 20) sizeW -= 1;
             let sizeH = (window.innerHeight - 20) / clocks.length;
             while (sizeH > window.innerWidth - 20) sizeH -= 1;
-        
+
             let clockSize = Math.max(sizeW, sizeH);
             clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
         
             clocks.forEach((clock, idx) => {
-                const clockWrapper = createClockElement(clocks, idx, clockSize);
+                const clockWrapper = createClockElement(clock, idx, clockSize);
                 clockContainer.appendChild(clockWrapper);
             });
         }
     };
+
+    const updateClocks = () => {
+        clocks.forEach((clock, idx) => {
+            if (clock.random || clock.single) {
+                const nowMinute = clock.analog.getMinutes();
+                if (clock.lastMinute !== nowMinute) {
+                    clock.lastMinute = nowMinute;
+                    clock.tickMinutes ++
+                    if (clock.tickMinutes >= clock.interval) {
+                        clock.tickMinutes = 0;
+
+                        if (clock.single) clocks[idx] = clock = clocks[(clock.idx + 1) % clocks.length];
+                        if (clock.random) clocks[idx] = clock = {... clock, ...randomTimezone()};
+                    }
+                }
+            }
+
+            clock.analog.setTimezone(clock.timezone);
+            clock.analog.drawClock();
+    
+            clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
+            clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
+        });
+    }
+
+    createClocks();
+    updateClocks();
+    setInterval(updateClocks, 1000 / 60);
 
     window.addEventListener('load', createClocks);
     window.addEventListener('resize', createClocks);
