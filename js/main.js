@@ -41,7 +41,7 @@ function createClockElement(clocks, idx, clockWidth) {
     const analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
 
     const displayClock = (clock) => { 
-        analog.setNewTimezone(clock.timezone);
+        analog.setTimezone(clock.timezone);
         analog.drawClock();
 
         cityName.className = `city-name-${analog.isPM() ? 'pm' : 'am'}`;

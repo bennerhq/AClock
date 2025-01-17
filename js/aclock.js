@@ -91,15 +91,9 @@ class AnalogClock {
         this.drawCenterCircle();
     }
 
-    setNewTimezone(timezone) {
-        this.timezone = timezone;
-    }
+    setTimezone = (timezone) => this.timezone = timezone;
 
-    isPM() {
-        return this.date.getHours() >= 12;
-    }
+    isPM = () => this.date.getHours() >= 12;
 
-    getMinutes() {
-        return this.date.getMinutes();
-    }
+    getMinutes = () => this.date.getMinutes();
 }
