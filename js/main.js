@@ -65,14 +65,14 @@ function updateClock(clock, interval) {
         if (clock.lastMinute !== nowMinute) {
             clock.tickMinutes += nowMinute - clock.lastMinute;
             if (clock.tickMinutes >= interval) {
-                clock.tickMinutes = 0;
                 clock = {... clock, ...randomTimezone()};
+                clock.analog.setTimezone(clock.timezone);
+                clock.tickMinutes = 0;
             }
             clock.lastMinute = nowMinute;
         }
     }
 
-    clock.analog.setTimezone(clock.timezone);
     clock.analog.drawClock();
 
     clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
