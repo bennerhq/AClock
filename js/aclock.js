@@ -7,10 +7,9 @@
  * ----------------------------------------------------------------------------
  */
 
-/***
- * Class for drawing a analog clock on a canvas.
+/**
+ * Class representing an analog clock, rendered on a canvas element.
  */
-
 export class AnalogClock {
     constructor(canvas, timezone, colorScheme) {
         this.canvas = canvas;
