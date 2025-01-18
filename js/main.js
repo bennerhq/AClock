@@ -78,13 +78,12 @@ function main() {
         if (clock.random) {
             const nowMinute = clock.analog.getMinutes();
             if (clock.lastMinute !== nowMinute) {
-                clock.lastMinute = nowMinute;
-                clock.tickMinutes ++
+                clock.tickMinutes += nowMinute - clock.lastMinute;
                 if (clock.tickMinutes >= interval) {
                     clock.tickMinutes = 0;
-
                     clock = {... clock, ...randomTimezone()};
                 }
+                clock.lastMinute = nowMinute;
             }
         }
 
