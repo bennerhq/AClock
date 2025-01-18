@@ -33,12 +33,11 @@ function createClockElement(clock, idx, clockWidth) {
     canvas.width = clockWidth - cityNameHeight;
     canvas.height = clockWidth - cityNameHeight;
 
-    const cityName = clockWrapper.querySelector(`#cityName-${idx}`);
-    cityName.style.fontSize = `${cityNameFontSize}px`;
-
     clock.analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
     clock.analog.drawClock();
-    clock.cityName = cityName;
+
+    clock.cityName = clockWrapper.querySelector(`#cityName-${idx}`);
+    clock.cityName.style.fontSize = `${cityNameFontSize}px`;
 
     return clockWrapper;
 }
