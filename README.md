@@ -55,4 +55,11 @@ This example will display three clocks: a random location, Copenhagen, and New Y
 To modify the application, update the relevant JavaScript and CSS files. The `removeDuplicates` function in `timezones.js` can be used to generate a new `tz_objects.js` file with unique time zones.
 
 ## License
-This project is licensed under the MIT License.
+/**
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <jens@bennerhq.com> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   
+ * ----------------------------------------------------------------------------
+ */
