@@ -2,7 +2,7 @@
  * This file is auto-generated on 2025-01-10T23:14:32.342Z.
  * Do not edit manually
  */
-const TIMEZONES = [
+export const TIMEZONES = [
   {
     "TZidentifier": "africa/abidjan",
     "countryCode": "CI,BF,GH,GM,GN,IS,ML,MR,SH,SL,SN,TG",

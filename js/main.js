@@ -1,6 +1,19 @@
+/**
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <jens@bennerhq.com> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   
+ * ----------------------------------------------------------------------------
+ */
+
 /***
  * @fileoverview Main application file
  */
+
+import { AnalogClock } from './aclock.js';
+import { DEFAULT_LOCATIONS } from './locations.js';
+import { randomTimezone, cityTimezone, defaultTimezone } from './timezones.js';
 
 const COLOR_SCHEME = {
     background: 'white', 
@@ -80,8 +93,11 @@ function createClockElement(clock, idx, clockWidth) {
     return clockWrapper;
 }
 
-function main() {
-    const urlParams = new URLSearchParams(window.location.search);
+export function main() {
+    const search = window.location.search || localStorage.getItem('search');
+    if (window.location.search) localStorage.setItem('search', search);
+    const urlParams = new URLSearchParams(search);
+
     const interval = parseInt(urlParams.get('interval')) || 1;
     const locations = (urlParams.get('locations') || '').split(',').map(loc => {
         const idx = parseInt(loc);
@@ -109,3 +125,5 @@ function main() {
     window.addEventListener('resize', () => createClocks(clocks));
     window.addEventListener('touchstart' in window ? 'touchstart' : 'click', () => createClocks(clocks));
 }
+
+main();

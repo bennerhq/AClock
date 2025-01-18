@@ -1,4 +1,15 @@
 /**
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <jens@bennerhq.com> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   
+ * ----------------------------------------------------------------------------
+ */
+
+import { TIMEZONES } from './tz_objects.js';
+
+/**
  * Maps a location object to a timezone object.
  *
  * @param {Object} location - The location object.
@@ -11,7 +22,7 @@
  * @returns {string} return.UTCOffset - The original UTC offset.
  * @returns {string} return.TZidentifier - The original timezone identifier.
  */
-function mapTimezone(location) {
+export function mapTimezone(location) {
     const TZidentifier = location.TZidentifier.split('/');
     const city = TZidentifier[TZidentifier.length - 1];
     const region = TZidentifier.length > 1 ? TZidentifier[0] : '';
@@ -25,7 +36,7 @@ function mapTimezone(location) {
         timezone,
         'UTCOffset': location.UTCOffset,
         'TZidentifier': location.TZidentifier,
-    }
+    };
 }
 
 /**
@@ -35,7 +46,7 @@ function mapTimezone(location) {
  * with underscores and the identifier will be converted to lowercase.
  * @returns {Array<Object>} An array of timezone objects that match the given identifier.
  */
-function cityTimezone(tzIdentifier) {
+export function cityTimezone(tzIdentifier) {
     tzIdentifier = tzIdentifier.trim().toLowerCase();
 
     // Filter results based on partial or full match
@@ -48,7 +59,7 @@ function cityTimezone(tzIdentifier) {
  *
  * @returns {Object} The object with the mapped timezone.
  */
-function randomTimezone() {
+export function randomTimezone() {
     const idx = Math.floor(Math.random() * TIMEZONES.length);
 
     return mapTimezone(TIMEZONES[idx]);
@@ -67,7 +78,7 @@ function randomTimezone() {
  * @returns {boolean} return.single - Indicates if the timezone is a single entry.
  * @returns {boolean} return.random - Indicates if the timezone is randomly selected.
  */
-function defaultTimezone() {
+export function defaultTimezone() {
     return mapTimezone({ 
         city: 'Europe/UTC', 
         UTCOffset: "+00:00",
@@ -83,7 +94,7 @@ function defaultTimezone() {
  * 
  * @function
  */
-function removeDuplicates() {
+export function removeDuplicates() {
     const uniqueTimezones = [];
     const seen = new Set();
 
@@ -104,7 +115,8 @@ function removeDuplicates() {
             `const TIMEZONES = ${JSON.stringify(uniqueTimezones, null, 2)};`
         ], 
         { type: 'application/javascript' }
-        );const url = URL.createObjectURL(blob);
+    );
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'tz_objects.js';
