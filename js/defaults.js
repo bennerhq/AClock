@@ -15,3 +15,12 @@ export const DEFAULT_LOCATIONS = [
     "Perth",
     "New York"
 ];
+
+export const DEFAULT_COLOR_SCHEME = {
+    background: 'white', 
+    frame: 'black',
+    markers: 'black',
+    seconds: 'red', 
+    minutes: 'black', 
+    hours: 'black', 
+};

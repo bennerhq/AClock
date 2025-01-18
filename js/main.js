@@ -12,17 +12,8 @@
  */
 
 import { AnalogClock } from './aclock.js';
-import { DEFAULT_LOCATIONS } from './locations.js';
+import { DEFAULT_LOCATIONS, DEFAULT_COLOR_SCHEME } from './defaults.js';
 import { randomTimezone, cityTimezone, defaultTimezone } from './timezones.js';
-
-const COLOR_SCHEME = {
-    background: 'white', 
-    frame: 'black',
-    markers: 'black',
-    seconds: 'red', 
-    minutes: 'black', 
-    hours: 'black', 
-};
 
 function createClocks(clocks) {
     const clockContainer = document.getElementById('clock-container');
@@ -87,7 +78,7 @@ function createClockElement(clock, idx, clockWidth) {
     canvas.width = clockWidth - cityNameHeight;
     canvas.height = clockWidth - cityNameHeight;
 
-    clock.analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
+    clock.analog = new AnalogClock(canvas, clock.timezone, DEFAULT_COLOR_SCHEME);
     updateClock(clock, 0); 
 
     return clockWrapper;
