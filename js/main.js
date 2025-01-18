@@ -96,14 +96,14 @@ function main() {
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
-   const animateClocks = () => {
+    createClocks(clocks);
+    const animateClocks = () => {
         clocks.forEach((clock, idx) => {
             clocks[idx] = updateClock(clock, interval);
         });
 
         requestAnimationFrame(animateClocks);
     };
-    createClocks(clocks);
     requestAnimationFrame(animateClocks);
 
     window.addEventListener('load', () => createClocks(clocks));
