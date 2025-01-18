@@ -43,6 +43,44 @@ function createClockElement(clock, idx, clockWidth) {
     return clockWrapper;
 }
 
+function createClocks(clocks) {
+    const clockContainer = document.getElementById('clock-container');
+    let sizeW = (window.innerWidth - 20) / clocks.length;
+    while (sizeW > window.innerHeight - 20) sizeW -= 1;
+    let sizeH = (window.innerHeight - 20) / clocks.length;
+    while (sizeH > window.innerWidth - 20) sizeH -= 1;
+
+    let clockSize = Math.max(sizeW, sizeH);
+    clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
+
+    clocks.forEach((clock, idx) => {
+        const clockWrapper = createClockElement(clock, idx, clockSize);
+        clockContainer.appendChild(clockWrapper);
+    });
+};
+
+function updateClock(clock, interval) {
+    if (clock.random) {
+        const nowMinute = clock.analog.getMinutes();
+        if (clock.lastMinute !== nowMinute) {
+            clock.tickMinutes += nowMinute - clock.lastMinute;
+            if (clock.tickMinutes >= interval) {
+                clock.tickMinutes = 0;
+                clock = {... clock, ...randomTimezone()};
+            }
+            clock.lastMinute = nowMinute;
+        }
+    }
+
+    clock.analog.setTimezone(clock.timezone);
+    clock.analog.drawClock();
+
+    clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
+    clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
+
+    return clock;
+};
+
 function main() {
     const urlParams = new URLSearchParams(window.location.search);
     const interval = parseInt(urlParams.get('interval')) || 1;
@@ -58,55 +96,17 @@ function main() {
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
-    const createClocks = () => {
-        const clockContainer = document.getElementById('clock-container');
-        let sizeW = (window.innerWidth - 20) / clocks.length;
-        while (sizeW > window.innerHeight - 20) sizeW -= 1;
-        let sizeH = (window.innerHeight - 20) / clocks.length;
-        while (sizeH > window.innerWidth - 20) sizeH -= 1;
-
-        let clockSize = Math.max(sizeW, sizeH);
-        clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
-    
+   const animateClocks = () => {
         clocks.forEach((clock, idx) => {
-            const clockWrapper = createClockElement(clock, idx, clockSize);
-            clockContainer.appendChild(clockWrapper);
-        });
-    };
-
-    const updateClock = (clock, idx) => {
-        if (clock.random) {
-            const nowMinute = clock.analog.getMinutes();
-            if (clock.lastMinute !== nowMinute) {
-                clock.tickMinutes += nowMinute - clock.lastMinute;
-                if (clock.tickMinutes >= interval) {
-                    clock.tickMinutes = 0;
-                    clock = {... clock, ...randomTimezone()};
-                }
-                clock.lastMinute = nowMinute;
-            }
-        }
-
-        clock.analog.setTimezone(clock.timezone);
-        clock.analog.drawClock();
-
-        clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
-        clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
-
-        return clock;
-    };
-
-    const animateClocks = () => {
-        clocks.forEach((clock, idx) => {
-            clocks[idx] = updateClock(clock);
+            clocks[idx] = updateClock(clock, interval);
         });
 
         requestAnimationFrame(animateClocks);
     };
-    createClocks();
+    createClocks(clocks);
     requestAnimationFrame(animateClocks);
 
-    window.addEventListener('load', createClocks);
-    window.addEventListener('resize', createClocks);
-    window.addEventListener('touchstart' in window ? 'touchstart' : 'click', createClocks);
+    window.addEventListener('load', () => createClocks(clocks));
+    window.addEventListener('resize', () => createClocks(clocks));
+    window.addEventListener('touchstart' in window ? 'touchstart' : 'click', () => createClocks(clocks));
 }
