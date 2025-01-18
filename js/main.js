@@ -74,31 +74,33 @@ function main() {
         });
     };
 
-    const updateClocks = () => {
-        clocks.forEach((clock, idx) => {
-            if (clock.random) {
-                const nowMinute = clock.analog.getMinutes();
-                if (clock.lastMinute !== nowMinute) {
-                    clock.lastMinute = nowMinute;
-                    clock.tickMinutes ++
-                    if (clock.tickMinutes >= interval) {
-                        clock.tickMinutes = 0;
+    const updateClock = (clock, idx) => {
+        if (clock.random) {
+            const nowMinute = clock.analog.getMinutes();
+            if (clock.lastMinute !== nowMinute) {
+                clock.lastMinute = nowMinute;
+                clock.tickMinutes ++
+                if (clock.tickMinutes >= interval) {
+                    clock.tickMinutes = 0;
 
-                        if (clock.random) clocks[idx] = clock = {... clock, ...randomTimezone()};
-                    }
+                    if (clock.random) clock = {... clock, ...randomTimezone()};
                 }
             }
+        }
 
-            clock.analog.setTimezone(clock.timezone);
-            clock.analog.drawClock();
-    
-            clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
-            clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
-        });
+        clock.analog.setTimezone(clock.timezone);
+        clock.analog.drawClock();
+
+        clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
+        clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
+
+        return clock;
     };
 
     const animateClocks = () => {
-        updateClocks();
+        clocks.forEach((clock, idx) => {
+            clocks[idx] = updateClock(clock);
+        });
 
         requestAnimationFrame(animateClocks);
     };
