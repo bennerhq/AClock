@@ -24,7 +24,6 @@ class AnalogClock {
         this.ctx.strokeStyle = this.colorScheme.frame;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
-        this.ctx.beginPath();
     }
 
     drawHourMarkers() {
