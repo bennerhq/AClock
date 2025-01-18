@@ -11,37 +11,6 @@ const COLOR_SCHEME = {
     hours: 'black', 
 };
 
-function createClockElement(clock, idx, clockWidth) { 
-    const cityNameFontSize = clockWidth / 17;
-    const cityNameHeight = cityNameFontSize * 2;
-
-    const clockWrapperID = `clockWrapper-${idx}`;
-    let clockWrapper = document.getElementById(clockWrapperID);
-    if (clockWrapper === null) {
-        clockWrapper = document.createElement('div');
-        clockWrapper.id = clockWrapperID;
-        clockWrapper.className = 'clock-wrapper';
-        clockWrapper.innerHTML = `
-            <canvas id="canvas-${idx}" class="clock"></canvas>
-            <div id="cityName-${idx}"></div>
-        `;
-    }
-    clockWrapper.style.width = `${clockWidth}px`;
-    clockWrapper.style.height = `${clockWidth}px`;
-
-    const canvas = clockWrapper.querySelector(`#canvas-${idx}`);
-    canvas.width = clockWidth - cityNameHeight;
-    canvas.height = clockWidth - cityNameHeight;
-
-    clock.analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
-    clock.analog.drawClock();
-
-    clock.cityName = clockWrapper.querySelector(`#cityName-${idx}`);
-    clock.cityName.style.fontSize = `${cityNameFontSize}px`;
-
-    return clockWrapper;
-}
-
 function createClocks(clocks) {
     const clockContainer = document.getElementById('clock-container');
     let sizeW = (window.innerWidth - 20) / clocks.length;
@@ -59,7 +28,7 @@ function createClocks(clocks) {
 };
 
 function updateClock(clock, interval) {
-    if (clock.random) {
+    if (interval && clock.random) {
         const nowMinute = clock.analog.getMinutes();
         if (clock.lastMinute !== nowMinute) {
             clock.tickMinutes += nowMinute - clock.lastMinute;
@@ -80,6 +49,37 @@ function updateClock(clock, interval) {
     return clock;
 };
 
+function createClockElement(clock, idx, clockWidth) { 
+    const cityNameFontSize = clockWidth / 17;
+    const cityNameHeight = cityNameFontSize * 2;
+
+    const clockWrapperID = `clockWrapper-${idx}`;
+    let clockWrapper = document.getElementById(clockWrapperID);
+    if (clockWrapper === null) {
+        clockWrapper = document.createElement('div');
+        clockWrapper.id = clockWrapperID;
+        clockWrapper.className = 'clock-wrapper';
+        clockWrapper.innerHTML = `
+            <canvas id="canvas-${idx}" class="clock"></canvas>
+            <div id="cityName-${idx}"></div>
+        `;
+    }
+    clockWrapper.style.width = `${clockWidth}px`;
+    clockWrapper.style.height = `${clockWidth}px`;
+
+    clock.cityName = clockWrapper.querySelector(`#cityName-${idx}`);
+    clock.cityName.style.fontSize = `${cityNameFontSize}px`;
+
+    const canvas = clockWrapper.querySelector(`#canvas-${idx}`);
+    canvas.width = clockWidth - cityNameHeight;
+    canvas.height = clockWidth - cityNameHeight;
+
+    clock.analog = new AnalogClock(canvas, clock.timezone, COLOR_SCHEME);
+    updateClock(clock, 0); 
+
+    return clockWrapper;
+}
+
 function main() {
     const urlParams = new URLSearchParams(window.location.search);
     const interval = parseInt(urlParams.get('interval')) || 1;
@@ -91,7 +91,7 @@ function main() {
     let clocks = locations.map(location => {
         const random = location === "?";
         const timezone = random ? randomTimezone() : cityTimezone(location);
-        return timezone ? {... {random, tickMinutes:0, lastMinute: 0}, ...timezone} : null;
+        return timezone ? {... {random, tickMinutes: 0, lastMinute: 0}, ...timezone} : null;
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
