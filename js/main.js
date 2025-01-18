@@ -84,9 +84,13 @@ function createClockElement(clock, idx, clockWidth) {
     return clockWrapper;
 }
 
-export function main() {
-    const search = window.location.search || localStorage.getItem('search');
-    if (window.location.search) localStorage.setItem('search', search);
+function main() {
+    let search = window.location.search;
+    if (search) {
+        localStorage.setItem('search', search);
+    } else {
+        search = localStorage.getItem('search') || '';
+    }
     const urlParams = new URLSearchParams(search);
 
     const interval = parseInt(urlParams.get('interval')) || 1;
