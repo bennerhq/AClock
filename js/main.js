@@ -83,7 +83,7 @@ function main() {
                 if (clock.tickMinutes >= interval) {
                     clock.tickMinutes = 0;
 
-                    if (clock.random) clock = {... clock, ...randomTimezone()};
+                    clock = {... clock, ...randomTimezone()};
                 }
             }
         }
