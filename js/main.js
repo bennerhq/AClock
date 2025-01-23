@@ -12,8 +12,9 @@
  */
 
 import { AnalogClock } from './aclock.js';
-import { DEFAULT_LOCATIONS, DEFAULT_COLOR_SCHEME } from './defaults.js';
+import { DEFAULT_LOCATIONS, DAY_COLOR_SCHEME, NIGHT_COLOR_SCHEME } from './defaults.js';
 import { randomTimezone, cityTimezone, defaultTimezone } from './timezones.js';
+import { sunrise, sunset } from './sun.js';
 
 function createClocks(clocks) {
     const clockContainer = document.getElementById('clock-container');
@@ -29,7 +30,7 @@ function createClocks(clocks) {
         const clockWrapper = createClockElement(clock, idx, clockSize);
         clockContainer.appendChild(clockWrapper);
     });
-};
+}
 
 function updateClock(clock, interval) {
     if (interval && clock.random) {
@@ -45,18 +46,16 @@ function updateClock(clock, interval) {
         }
     }
 
+    const now = clock.analog.getDate().getTime();
+    const dayColor = (now > clock.sunrise) && (now < clock.sunset);
+
+    clock.analog.setColorScheme(dayColor ? DAY_COLOR_SCHEME : NIGHT_COLOR_SCHEME);
     clock.analog.drawClock();
 
-    clock.cityName.className = `city-name-${clock.analog.isPM() ? 'pm' : 'am'}`;
-    clock.cityName.textContent = `\u00A0\u00A0${clock.city} / ${clock.UTCOffset}\u00A0\u00A0`;
-
     return clock;
-};
+}
 
 function createClockElement(clock, idx, clockWidth) { 
-    const cityNameFontSize = clockWidth / 17;
-    const cityNameHeight = cityNameFontSize * 2;
-
     const clockWrapperID = `clockWrapper-${idx}`;
     let clockWrapper = document.getElementById(clockWrapperID);
     if (clockWrapper === null) {
@@ -71,15 +70,19 @@ function createClockElement(clock, idx, clockWidth) {
     clockWrapper.style.width = `${clockWidth}px`;
     clockWrapper.style.height = `${clockWidth}px`;
 
-    clock.cityName = clockWrapper.querySelector(`#cityName-${idx}`);
-    clock.cityName.style.fontSize = `${cityNameFontSize}px`;
-
     const canvas = clockWrapper.querySelector(`#canvas-${idx}`);
-    canvas.width = clockWidth - cityNameHeight;
-    canvas.height = clockWidth - cityNameHeight;
+    canvas.width = clockWidth * 0.97;
+    canvas.height = clockWidth * 0.97;
 
-    clock.analog = new AnalogClock(canvas, clock.timezone, DEFAULT_COLOR_SCHEME);
-    updateClock(clock, 0); 
+    clock.analog = new AnalogClock(canvas, clock.city, clock.timezone, DAY_COLOR_SCHEME);
+
+    const clockDate = clock.analog.getDate();
+    const sunriseTime = sunrise(clockDate, clock.lat, clock.lng).getTime();
+    const sunsetTime = sunset(clockDate, clock.lat, clock.lng).getTime();
+    clock.sunrise =  sunriseTime + (clock.timezone - 1) * 60 * 60 * 1000;
+    clock.sunset =  sunsetTime + (clock.timezone - 1) * 60 * 60 * 1000;
+
+    updateClock(clock, 0);
 
     return clockWrapper;
 }
@@ -122,3 +125,4 @@ function main() {
 }
 
 main();
+

@@ -11,8 +11,9 @@
  * Class representing an analog clock, rendered on a canvas element.
  */
 export class AnalogClock {
-    constructor(canvas, timezone, colorScheme) {
+    constructor(canvas, city, timezone, colorScheme) {
         this.canvas = canvas;
+        this.city = city.toUpperCase();
         this.timezone = timezone;
         this.colorScheme = colorScheme;
 
@@ -20,8 +21,7 @@ export class AnalogClock {
         this.radius = this.canvas.width / 2;
         this.ctx.translate(this.radius, this.radius);
 
-        this.localTime = 0;
-        this.date = 0;
+        this.setTime();
     }
 
     drawFace() {
@@ -38,6 +38,8 @@ export class AnalogClock {
         this.ctx.lineWidth = this.radius * 0.01;
         this.ctx.strokeStyle = this.colorScheme.markers;
         for (let num = 1; num < 13; num++) {
+            if (num === 3) continue;
+
             let ang = num * Math.PI / 6;
             this.ctx.save();
             this.ctx.rotate(ang);
@@ -61,12 +63,38 @@ export class AnalogClock {
         this.ctx.rotate(-pos);
     }
 
-    drawTime() {
+    drawText() {
+        this.ctx.font = `${this.radius * 0.11}px Arial`;
+        this.ctx.fillStyle = this.colorScheme.hours;
+        this.ctx.textBaseline = "middle";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(this.city, 0, this.radius * 0.2);
+    }
+
+    drawDayNumber() {
+        const day = this.date.getDate();
+        this.ctx.save();
+        this.ctx.rotate(Math.PI / 2); // Rotate to 15:00 position
+        this.ctx.translate(0, -this.radius * 0.85); // Move to the edge of the clock face
+        this.ctx.rotate(3 * Math.PI / 2); // Rotate back to original orientation
+        this.ctx.font = `${this.radius * 0.15}px Arial`;
+        this.ctx.fillStyle = this.colorScheme.hours;
+        this.ctx.textBaseline = "middle";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(day, 0, 0);
+        this.ctx.restore();
+    }
+
+    setTime() {
         const now = new Date();
         const utcOffset = now.getTimezoneOffset() * 60000;
         const timezoneOffset = this.timezone * 3600000;
-        this.localTime = now.getTime() + utcOffset + timezoneOffset;
-        this.date = new Date(this.localTime);
+        const localTime = now.getTime() + utcOffset + timezoneOffset;
+        this.date = new Date(localTime);
+    }
+
+    drawTime() {
+        this.setTime();
 
         const hour = this.date.getHours();
         const minute = this.date.getMinutes();
@@ -85,7 +113,7 @@ export class AnalogClock {
     drawCenterCircle() {
         this.ctx.beginPath();
         this.ctx.arc(0, 0, this.radius * 0.03, 0, 2 * Math.PI);
-        this.ctx.fillStyle = this.colorScheme.frame;  
+        this.ctx.fillStyle = this.colorScheme.hours;  
         this.ctx.fill();
     }
 
@@ -93,12 +121,16 @@ export class AnalogClock {
         this.ctx.clearRect(-this.radius, -this.radius, this.canvas.width, this.canvas.height);
 
         this.drawFace();
+        this.drawText();
         this.drawHourMarkers();
+        this.drawDayNumber();
         this.drawTime();
         this.drawCenterCircle();
     }
 
     setTimezone = (timezone) => this.timezone = timezone;
+    setColorScheme = (colorScheme) => this.colorScheme = colorScheme;
     isPM = () => this.date.getHours() >= 12;
     getMinutes = () => this.date.getMinutes();
+    getDate = () => this.date;
 }

@@ -34,8 +34,10 @@ export function mapTimezone(location) {
         city,
         region,
         timezone,
-        'UTCOffset': location.UTCOffset,
-        'TZidentifier': location.TZidentifier,
+        UTCOffset: location.UTCOffset,
+        TZidentifier: location.TZidentifier,
+        lat: location.lat,
+        lng: location.lng,
     };
 }
 
@@ -87,8 +89,37 @@ export function defaultTimezone() {
 }
 
 /**
- * Removes duplicate timezones from the global TIMEZONES array, sorts them by their identifier,
- * and generates a downloadable JavaScript file containing the unique timezones.
+ * Generates a JavaScript file containing the provided timezones object and triggers a 
+ * download of the file.
+ *
+ * @param {Object} timezones - The object containing timezone data to be included 
+ * in the generated file.
+ */
+function downloadTimezones(timezones) {
+    const blob = new Blob(
+        [
+            `/***\n` +
+            ` * This file is auto-generated on ${new Date().toISOString()}.\n` + 
+            ` * Do not edit manually\n` +
+            ` */\n` +
+            `export const TIMEZONES = ${JSON.stringify(timezones, null, 2)};`
+        ], 
+        { type: 'application/javascript' }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tz_objects.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/**
+ * Removes duplicate timezones from the global TIMEZONES array, sorts them by their 
+ * identifier, and generates a downloadable JavaScript file containing the unique 
+ * timezones.
  * 
  * The generated file includes a timestamp and a warning that it is auto-generated.
  * 
@@ -105,23 +136,42 @@ export function removeDuplicates() {
         }
     });
     uniqueTimezones.sort((a, b) => a.TZidentifier.localeCompare(b.TZidentifier));
+    downloadTimezones(uniqueTimezones);
+}
 
-    const blob = new Blob(
-        [
-            `/***\n` +
-            ` * This file is auto-generated on ${new Date().toISOString()}.\n` + 
-            ` * Do not edit manually\n` +
-            ` */\n` +
-            `const TIMEZONES = ${JSON.stringify(uniqueTimezones, null, 2)};`
-        ], 
-        { type: 'application/javascript' }
-    );
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'tz_objects.js';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+/**
+ * Reads a CSV file line by line and updates the TIMEZONES array with new 
+ * information.
+ *
+ * @param {string} filePath - The path to the CSV file.
+ */
+export function updateTimezonesFromCSV(filePath) {
+    fetch(filePath)
+        .then(response => response.text())
+        .then(data => {
+            let timezones = [];
+            const lines = data.split('\n');
+            lines.forEach(line => {
+                if (line.trim() === '') return; 
+
+                let [city,city_ascii,lat,lng,country,iso2,iso3,admin_name,capital,population,id] = line.split(',');
+                city = city.trim().toLowerCase();
+                const result = TIMEZONES.filter(tz => tz.TZidentifier.includes(city));
+                if (result.length) {
+                    timezones.push({
+                        TZidentifier: result[0].TZidentifier,
+                        countryCode: result[0].countryCode,
+                        UTCOffset: result[0].UTCOffset,
+                        timezone: result[0].timezone,
+                        lat: parseFloat(lat.trim()),
+                        lng: parseFloat(lng.trim()),
+                        country: country.trim(),
+                        capital: capital.trim(),
+                        population: parseInt(population.trim(), 10),
+                    });
+                }
+            });
+            downloadTimezones(timezones);
+        })
+        .catch(error => console.error('Error reading CSV file:', error));
 }

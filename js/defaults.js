@@ -21,7 +21,6 @@ export const DEFAULT_LOCATIONS = [
 /**
  * Default color scheme for the clock.
  * 
- * @constant {Object} DEFAULT_COLOR_SCHEME
  * @property {string} background - The background color of the clock.
  * @property {string} frame - The color of the clock frame.
  * @property {string} markers - The color of the clock markers.
@@ -29,11 +28,20 @@ export const DEFAULT_LOCATIONS = [
  * @property {string} minutes - The color of the minutes hand.
  * @property {string} hours - The color of the hours hand.
  */
-export const DEFAULT_COLOR_SCHEME = {
+export const DAY_COLOR_SCHEME = {
     background: 'white', 
     frame: 'black',
     markers: 'black',
     seconds: 'red', 
     minutes: 'black', 
     hours: 'black', 
+};
+
+export const NIGHT_COLOR_SCHEME = {
+    background: 'black', 
+    frame: 'black',
+    markers: 'white',
+    seconds: 'red', 
+    minutes: 'white', 
+    hours: 'white', 
 };
