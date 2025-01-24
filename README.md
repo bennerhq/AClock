@@ -4,10 +4,10 @@
 # Analog Clock Application 
 
 ## Description
-The Analog Clock Application is a web-based project that displays multiple analog clocks for different time zones. The application allows users to view the current time in various cities around the world, with the option to display a single clock or multiple clocks simultaneously. The clocks are rendered using HTML5 Canvas and JavaScript, providing a visually appealing and interactive experience.
+The Analog Clock Application is a web-based project that displays multiple analog clocks for different time zones. Users can view the current time in various cities around the world, with the option to display a single clock or multiple clocks simultaneously. The clocks are rendered using HTML5 Canvas and JavaScript, providing a visually appealing and interactive experience.
 
 ## Project 
-The main purpose of this project was to explore and learn how to use GitHub Copilot with Visual Studio Code!
+The main purpose of this project was to explore and learn how to use GitHub Copilot with Visual Studio Code.
 
 ## Features
 - Display multiple analog clocks for different time zones.
@@ -29,14 +29,17 @@ The main JavaScript file that initializes the application, handles user interact
 ### js/aclock.js
 A JavaScript file that defines the `AnalogClock` class, responsible for drawing the analog clock on a canvas element.
 
-### js/locations.js
-A JavaScript file that contains default locations for the clock application.
+### js/defaults.js
+A JavaScript file that contains default settings and configurations for the clock application. This file includes default locations, time intervals, and other settings that can be easily modified to customize the behavior of the application.
 
 ### js/timezones.js
 A JavaScript file that maps location objects to time zone objects and provides functions for handling time zones.
 
 ### js/tz_objects.js
 An auto-generated JavaScript file that contains the time zone data. This file is created by the `removeDuplicates` function in `timezones.js`.
+
+### js/sun.js
+A JavaScript file that calculates the position of the sun in the sky based on the current time and location. This file is used to add a sun position indicator to the analog clocks, enhancing the visual representation of time.
 
 ### manifest.json
 A JSON file that defines the web app manifest, including the app's name, icons, and display settings.
@@ -54,8 +57,6 @@ This example will display three clocks: a random location, Copenhagen, and New Y
 ## Development
 To modify the application, update the relevant JavaScript and CSS files. The `removeDuplicates` function in `timezones.js` can be used to generate a new `tz_objects.js` file with unique time zones.
 
-## License: 
+## License 
 "THE BEER-WARE LICENSE" (Revision 42):
-<jens@bennerhq.com> wrote this file.  As long as you retain this notice you
-can do whatever you want with this stuff. If we meet some day, and you think
-this stuff is worth it, you can buy me a beer in return.   
+<jens@bennerhq.com> wrote this file. As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think this stuff is worth it, you can buy me a beer in return.

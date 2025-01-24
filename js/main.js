@@ -47,9 +47,8 @@ function updateClock(clock, interval) {
     }
 
     const now = clock.analog.getDate().getTime();
-    const dayColor = (now > clock.sunrise) && (now < clock.sunset);
-
-    clock.analog.setColorScheme(dayColor ? DAY_COLOR_SCHEME : NIGHT_COLOR_SCHEME);
+    const colorScheme = (now > clock.sunrise && now < clock.sunset) ? DAY_COLOR_SCHEME : NIGHT_COLOR_SCHEME;
+    clock.analog.setColorScheme(colorScheme);
     clock.analog.drawClock();
 
     return clock;
@@ -125,4 +124,3 @@ function main() {
 }
 
 main();
-

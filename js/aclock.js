@@ -14,14 +14,12 @@ export class AnalogClock {
     constructor(canvas, city, timezone, colorScheme) {
         this.canvas = canvas;
         this.city = city.toUpperCase();
-        this.timezone = timezone;
+        this.setTimezone(timezone);
         this.colorScheme = colorScheme;
 
         this.ctx = this.canvas.getContext('2d');
         this.radius = this.canvas.width / 2;
         this.ctx.translate(this.radius, this.radius);
-
-        this.setTime();
     }
 
     drawFace() {
@@ -29,16 +27,18 @@ export class AnalogClock {
         this.ctx.arc(0, 0, this.radius - 1, 0, 2 * Math.PI);
         this.ctx.fillStyle = this.colorScheme.background;
         this.ctx.fill();
-        this.ctx.strokeStyle = this.colorScheme.frame;
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
+        if (this.colorScheme.frame !== this.colorScheme.background) {
+            this.ctx.strokeStyle = this.colorScheme.frame;
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+        }
     }
 
     drawHourMarkers() {
         this.ctx.lineWidth = this.radius * 0.01;
         this.ctx.strokeStyle = this.colorScheme.markers;
         for (let num = 1; num < 13; num++) {
-            if (num === 3) continue;
+            if (num === 3) continue; // Skip 15:00 position - day numbver is drawn here
 
             let ang = num * Math.PI / 6;
             this.ctx.save();
@@ -85,7 +85,11 @@ export class AnalogClock {
         this.ctx.restore();
     }
 
-    setTime() {
+    setTimezone(timezone) {
+        if (timezone !== undefined) {
+            this.timezone = timezone;
+        }
+
         const now = new Date();
         const utcOffset = now.getTimezoneOffset() * 60000;
         const timezoneOffset = this.timezone * 3600000;
@@ -94,7 +98,7 @@ export class AnalogClock {
     }
 
     drawTime() {
-        this.setTime();
+        this.setTimezone();
 
         const hour = this.date.getHours();
         const minute = this.date.getMinutes();
@@ -128,9 +132,7 @@ export class AnalogClock {
         this.drawCenterCircle();
     }
 
-    setTimezone = (timezone) => this.timezone = timezone;
     setColorScheme = (colorScheme) => this.colorScheme = colorScheme;
-    isPM = () => this.date.getHours() >= 12;
     getMinutes = () => this.date.getMinutes();
     getDate = () => this.date;
 }

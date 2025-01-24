@@ -136,6 +136,7 @@ export function removeDuplicates() {
         }
     });
     uniqueTimezones.sort((a, b) => a.TZidentifier.localeCompare(b.TZidentifier));
+
     downloadTimezones(uniqueTimezones);
 }
 
@@ -171,7 +172,7 @@ export function updateTimezonesFromCSV(filePath) {
                     });
                 }
             });
-            downloadTimezones(timezones);
+            removeDuplicates(timezones);
         })
         .catch(error => console.error('Error reading CSV file:', error));
 }
