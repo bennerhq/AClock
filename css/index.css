@@ -29,19 +29,3 @@ body {
 .clock {
     margin-bottom: 5px;
 }
-
-.city-name-am,
-.city-name-pm {
-    text-align: center;
-    border-radius: 11px;
-}
-
-.city-name-am {
-    color: white;
-    background-color: black;
-}
-
-.city-name-pm {
-    color: black;
-    background-color: transparent;
-}

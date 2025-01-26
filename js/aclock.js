@@ -24,12 +24,13 @@ export class AnalogClock {
 
     drawFace() {
         this.ctx.beginPath();
-        this.ctx.arc(0, 0, this.radius - 1, 0, 2 * Math.PI);
+        this.ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
         this.ctx.fillStyle = this.colorScheme.background;
         this.ctx.fill();
+
         if (this.colorScheme.frame !== this.colorScheme.background) {
             this.ctx.strokeStyle = this.colorScheme.frame;
-            this.ctx.lineWidth = 2;
+            this.ctx.lineWidth = 1;
             this.ctx.stroke();
         }
     }
@@ -116,8 +117,13 @@ export class AnalogClock {
 
     drawCenterCircle() {
         this.ctx.beginPath();
-        this.ctx.arc(0, 0, this.radius * 0.03, 0, 2 * Math.PI);
-        this.ctx.fillStyle = this.colorScheme.hours;  
+        this.ctx.arc(0, 0, this.radius * 0.05, 0, 2 * Math.PI);
+        this.ctx.fillStyle = this.colorScheme.hours;
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, this.radius * 0.02, 0, 2 * Math.PI);
+        this.ctx.fillStyle = this.colorScheme.background;
         this.ctx.fill();
     }
 
@@ -132,6 +138,7 @@ export class AnalogClock {
         this.drawCenterCircle();
     }
 
+    setCity = (city) => this.city = city.toUpperCase();
     setColorScheme = (colorScheme) => this.colorScheme = colorScheme;
     getMinutes = () => this.date.getMinutes();
     getDate = () => this.date;

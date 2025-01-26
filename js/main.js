@@ -16,22 +16,6 @@ import { DEFAULT_LOCATIONS, DAY_COLOR_SCHEME, NIGHT_COLOR_SCHEME } from './defau
 import { randomTimezone, cityTimezone, defaultTimezone } from './timezones.js';
 import { sunrise, sunset } from './sun.js';
 
-function createClocks(clocks) {
-    const clockContainer = document.getElementById('clock-container');
-    let sizeW = (window.innerWidth - 20) / clocks.length;
-    while (sizeW > window.innerHeight - 20) sizeW -= 1;
-    let sizeH = (window.innerHeight - 20) / clocks.length;
-    while (sizeH > window.innerWidth - 20) sizeH -= 1;
-
-    let clockSize = Math.max(sizeW, sizeH);
-    clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
-
-    clocks.forEach((clock, idx) => {
-        const clockWrapper = createClockElement(clock, idx, clockSize);
-        clockContainer.appendChild(clockWrapper);
-    });
-}
-
 function updateClock(clock, interval) {
     if (interval && clock.random) {
         const nowMinute = clock.analog.getMinutes();
@@ -49,6 +33,7 @@ function updateClock(clock, interval) {
     const now = clock.analog.getDate().getTime();
     const colorScheme = (now > clock.sunrise && now < clock.sunset) ? DAY_COLOR_SCHEME : NIGHT_COLOR_SCHEME;
     clock.analog.setColorScheme(colorScheme);
+    clock.analog.setCity(clock.city);
     clock.analog.drawClock();
 
     return clock;
@@ -81,9 +66,25 @@ function createClockElement(clock, idx, clockWidth) {
     clock.sunrise =  sunriseTime + (clock.timezone - 1) * 60 * 60 * 1000;
     clock.sunset =  sunsetTime + (clock.timezone - 1) * 60 * 60 * 1000;
 
-    updateClock(clock, 0);
+    updateClock(clock);
 
     return clockWrapper;
+}
+
+function createClocks(clocks) {
+    const clockContainer = document.getElementById('clock-container');
+    let sizeW = (window.innerWidth - 20) / clocks.length;
+    while (sizeW > window.innerHeight - 20) sizeW -= 1;
+    let sizeH = (window.innerHeight - 20) / clocks.length;
+    while (sizeH > window.innerWidth - 20) sizeH -= 1;
+
+    let clockSize = Math.max(sizeW, sizeH);
+    clockContainer.style.flexDirection = clockSize == sizeW ? 'row' : 'column';
+
+    clocks.forEach((clock, idx) => {
+        const clockWrapper = createClockElement(clock, idx, clockSize);
+        clockContainer.appendChild(clockWrapper);
+    });
 }
 
 function main() {
