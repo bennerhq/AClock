@@ -22,6 +22,24 @@ export class AnalogClock {
         this.ctx.translate(this.radius, this.radius);
     }
 
+    setTimezone(timezone) {
+        if (timezone !== undefined) {
+            this.timezone = timezone;
+        }
+
+        const now = new Date();
+        const utcOffset = now.getTimezoneOffset() * 60000;
+        const timezoneOffset = this.timezone * 3600000;
+        const localTime = now.getTime() + utcOffset + timezoneOffset;
+        this.date = new Date(localTime);
+    }
+
+    setCity = (city) => this.city = city.toUpperCase();
+    setColorScheme = (colorScheme) => this.colorScheme = colorScheme;
+
+    getMinutes = () => this.date.getMinutes();
+    getDate = () => this.date;
+
     drawFace() {
         this.ctx.beginPath();
         this.ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
@@ -86,18 +104,6 @@ export class AnalogClock {
         this.ctx.restore();
     }
 
-    setTimezone(timezone) {
-        if (timezone !== undefined) {
-            this.timezone = timezone;
-        }
-
-        const now = new Date();
-        const utcOffset = now.getTimezoneOffset() * 60000;
-        const timezoneOffset = this.timezone * 3600000;
-        const localTime = now.getTime() + utcOffset + timezoneOffset;
-        this.date = new Date(localTime);
-    }
-
     drawTime() {
         this.setTimezone();
 
@@ -137,9 +143,4 @@ export class AnalogClock {
         this.drawTime();
         this.drawCenterCircle();
     }
-
-    setCity = (city) => this.city = city.toUpperCase();
-    setColorScheme = (colorScheme) => this.colorScheme = colorScheme;
-    getMinutes = () => this.date.getMinutes();
-    getDate = () => this.date;
 }
