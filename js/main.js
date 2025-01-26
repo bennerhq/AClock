@@ -45,13 +45,7 @@ function createClockElement(clock, idx, clockWidth) {
     if (clockWrapper === null) {
         clockWrapper = document.createElement('div');
         clockWrapper.id = clockWrapperID;
-        clockWrapper.style.display = 'flex';
-        clockWrapper.style.flexDirection = 'column';
-        clockWrapper.style.alignItems= 'center';
-        clockWrapper.innerHTML = `
-            <canvas id="canvas-${idx}" style="margin-bottom: 5px;"></canvas>
-            <div id="cityName-${idx}"></div>
-        `;
+        clockWrapper.innerHTML = `<canvas id="canvas-${idx}"></canvas>`;
     }
     clockWrapper.style.width = `${clockWidth}px`;
     clockWrapper.style.height = `${clockWidth}px`;
