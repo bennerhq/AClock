@@ -45,9 +45,11 @@ function createClockElement(clock, idx, clockWidth) {
     if (clockWrapper === null) {
         clockWrapper = document.createElement('div');
         clockWrapper.id = clockWrapperID;
-        clockWrapper.className = 'clock-wrapper';
+        clockWrapper.style.display = 'flex';
+        clockWrapper.style.flexDirection = 'column';
+        clockWrapper.style.alignItems= 'center';
         clockWrapper.innerHTML = `
-            <canvas id="canvas-${idx}" class="clock"></canvas>
+            <canvas id="canvas-${idx}" style="margin-bottom: 5px;"></canvas>
             <div id="cityName-${idx}"></div>
         `;
     }
@@ -71,8 +73,8 @@ function createClockElement(clock, idx, clockWidth) {
     return clockWrapper;
 }
 
-function createClocks(clocks) {
-    const clockContainer = document.getElementById('clock-container');
+function createClocks(anchorID, clocks) {
+    const clockContainer = document.getElementById(anchorID);
     let sizeW = (window.innerWidth - 20) / clocks.length;
     while (sizeW > window.innerHeight - 20) sizeW -= 1;
     let sizeH = (window.innerHeight - 20) / clocks.length;
@@ -87,7 +89,7 @@ function createClocks(clocks) {
     });
 }
 
-function main() {
+export function main(anchorID) {
     let search = window.location.search;
     if (search) {
         localStorage.setItem('search', search);
@@ -109,7 +111,7 @@ function main() {
     }).filter(Boolean);
     if (clocks.length === 0) clocks = [defaultTimezone()];
 
-    createClocks(clocks);
+    createClocks(anchorID, clocks);
     const animateClocks = () => {
         clocks.forEach((clock, idx) => {
             clocks[idx] = updateClock(clock, interval);
@@ -119,9 +121,7 @@ function main() {
     };
     requestAnimationFrame(animateClocks);
 
-    window.addEventListener('load', () => createClocks(clocks));
-    window.addEventListener('resize', () => createClocks(clocks));
-    window.addEventListener('touchstart' in window ? 'touchstart' : 'click', () => createClocks(clocks));
+    window.addEventListener('load', () => createClocks(anchorID, clocks));
+    window.addEventListener('resize', () => createClocks(anchorID, clocks));
+    window.addEventListener('touchstart' in window ? 'touchstart' : 'click', () => createClocks(anchorID, clocks));
 }
-
-main();

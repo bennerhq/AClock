@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Analog Clock</title>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="manifest" href="manifest.json">
-
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-
-    <script src="js/main.js" type="module"></script>
+    <link rel='manifest' href='manifest.json'>
+    <link rel='stylesheet' href='css/index.css'>
+    <link rel='icon' href='images/favicon.ico' type='image/x-icon'>
 </head>
 
 <body>
-    <div class="clock-container" id="clock-container"></div>
+    <div id='clock-container'></div>
+
+    <script type='module'>
+        import { main } from './js/main.js';
+        document.addEventListener('DOMContentLoaded', () => main('clock-container'));
+    </script>
 </body>
 
 </html>
