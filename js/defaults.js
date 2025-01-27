@@ -35,6 +35,7 @@ export const DAY_COLOR_SCHEME = {
     seconds: 'red', 
     minutes: 'black', 
     hours: 'black', 
+    font: 'Verdana',
 };
 
 export const NIGHT_COLOR_SCHEME = {
@@ -44,4 +45,5 @@ export const NIGHT_COLOR_SCHEME = {
     seconds: 'red', 
     minutes: 'white', 
     hours: 'white', 
+    font: 'Verdana',
 };

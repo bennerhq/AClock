@@ -83,7 +83,7 @@ export class AnalogClock {
     }
 
     drawText() {
-        this.ctx.font = `${this.radius * 0.11}px Arial`;
+        this.ctx.font = `${this.radius * 0.11}px ${this.colorScheme.font}`;
         this.ctx.fillStyle = this.colorScheme.hours;
         this.ctx.textBaseline = "middle";
         this.ctx.textAlign = "center";
@@ -96,7 +96,7 @@ export class AnalogClock {
         this.ctx.rotate(Math.PI / 2); // Rotate to 15:00 position
         this.ctx.translate(0, -this.radius * 0.85); // Move to the edge of the clock face
         this.ctx.rotate(3 * Math.PI / 2); // Rotate back to original orientation
-        this.ctx.font = `${this.radius * 0.15}px Arial`;
+        this.ctx.font = `${this.radius * 0.15}px ${this.colorScheme.font}`;
         this.ctx.fillStyle = this.colorScheme.hours;
         this.ctx.textBaseline = "middle";
         this.ctx.textAlign = "center";
