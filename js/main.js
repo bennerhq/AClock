@@ -24,6 +24,7 @@ function updateClock(clock, interval) {
             if (clock.tickMinutes >= interval) {
                 clock = {... clock, ...randomTimezone()};
                 clock.analog.setTimezone(clock.timezone);
+                clock.analog.setCity(clock.city);
                 clock.tickMinutes = 0;
             }
             clock.lastMinute = nowMinute;
@@ -33,7 +34,6 @@ function updateClock(clock, interval) {
     const now = clock.analog.getDate().getTime();
     const colorScheme = (now > clock.sunrise && now < clock.sunset) ? DAY_COLOR_SCHEME : NIGHT_COLOR_SCHEME;
     clock.analog.setColorScheme(colorScheme);
-    clock.analog.setCity(clock.city);
     clock.analog.drawClock();
 
     return clock;
